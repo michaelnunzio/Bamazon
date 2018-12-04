@@ -92,7 +92,7 @@ function addInventory(){
     ])
     .then(function(input) {
         var item= input.item_id;
-        var quantity= input.amount;
+        var quantity= parseInt(input.amount); //fixed- put a parse into around amount being added.
 
         //**query shorthand */
         var querySel= "SELECT * FROM products WHERE ? "
@@ -104,22 +104,22 @@ function addInventory(){
               if(result.length===0){
 
                 console.log("Error. Please choose a new item")
-                showInventory();
+                viewProducts();
 
               } else{
-                    var productsAva= result[0]
+                    var productsAva= result[0] //tried parseInt here will not work 
                     console.log("Ok! I'll add that to the stock for you!")
                     //update inventory.
-                    var updateQueryStr = 'UPDATE products SET stock_quantity = ' + parseInt(productsAva.stock_quantity) + parseInt(quantity) +' WHERE item_id = ' + item;
-                    console.log(updateQueryStr)
-                    // connection.query(updateQueryStr, function(err, data){
-                    //         if(err) throw err;
+                    var updateQueryStr = 'UPDATE products SET stock_quantity = ' + parseInt(productsAva.stock_quantity + quantity) +' WHERE item_id = ' + item;
+                    // console.log(updateQueryStr)
+                    connection.query(updateQueryStr, function(err, data){
+                            if(err) throw err;
 
-                    //         console.log("Your order has been placed! Stock should be updated now. Check by Viewing Inventory");
-                    //         console.log("\n--------------------------------------------------\n")
+                            console.log("Your order has been placed! Stock should be updated now. Check by Viewing Inventory");
+                            console.log("\n--------------------------------------------------\n")
 
                         connection.end();
-                    // })               
+                    })               
                 }
           })
     })
@@ -127,18 +127,49 @@ function addInventory(){
 
 //Add a new product stock- make it so it's not hardcoded later. Refrence above function { } hardcoded fixed.
 function addProduct(){
+        inquirer
+        .prompt([
+        {
+            type: "input", //productName
+            name: "productName",
+            message: "What is product name you would like to add?",
+        },
+
+        {
+            type: "input",
+            name: "departmentName",
+            message: "What is the department name you would like to add?",
+        },
+
+        {
+            type: "input",
+            name: "itemPrice",
+            message: "What is the price of the item you would like to add?",
+            },
+
+            {
+                type: "input",
+                name: "invAmount",
+                message: "How many of these items would you like to add?",
+            },
+
+                 ])
+                .then(function(input) {
+                var prodName= input.productName;
+                var depName= input.departmentName;
+                var itemP= input.itemPrice;
+                var amountOf= input.invAmount;
+
+                //query shorthand
+                var addQuery= "INSERT INTO products SET ?"
+
+                connection.query(addQuery,{product_name:prodName,department_name:depName,price:itemP,stock_quantity:amountOf}, function(err,result){
+                    if (err) throw err;
     
-    connection.query("INSERT INTO products SET ?",
-    {
-        product_name:"Note Book",
-        department_name:"Stationary",
-        price: 10.00,
-        stock_quantity: 1000
-    },
-    function(err,result){
-        console.log("Item added to inventory!")
-        connection.end();
-    });
+                    console.log("Item added to inventory!")
+                    connection.end();
+                });
+            })
 }
 
 

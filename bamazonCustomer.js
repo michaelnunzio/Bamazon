@@ -43,7 +43,7 @@ var connection = mysql.createConnection({
           var querySel= "SELECT * FROM products WHERE ? "
 
           // console.log("you selected the ID NUMBER " + item + " , and you want to buy the amount of: " + quantity) Use this to check how many.
-          connection.query(querySel,{item_id: item} , function(err, result) {
+          connection.query(querySel,{item_id: item} , function(err, result) { // add the input
             if (err) throw err;
 
                 if(result.length===0){
@@ -58,7 +58,7 @@ var connection = mysql.createConnection({
                   if(quantity<= productsAva.stock_quantity){
                     console.log("There's enough of those in stock!")
                     //update inventory.
-                    var updateQueryStr = 'UPDATE products SET stock_quantity = ' + (productsAva.stock_quantity- quantity) +' WHERE item_id = ' + item;
+                    var updateQueryStr = 'UPDATE products SET stock_quantity = ' + (productsAva.stock_quantity - quantity) +' WHERE item_id = ' + item;
                     // console.log("updateQueryStr=" + updateQueryStr) check if working correctly. it is. 
                     connection.query(updateQueryStr, function(err, data){
                             if(err) throw err;
