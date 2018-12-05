@@ -43,7 +43,7 @@ function managerQuestions(){
                                 break; 
                             
                                 case "View Low Inventory":
-                            
+                                    lowInventory();
                             
                                 break;
                             
@@ -132,7 +132,7 @@ function addProduct(){
         {
             type: "input", //productName
             name: "productName",
-            message: "What is product name you would like to add?",
+            message: "What is name of the product you would like to add?",
         },
 
         {
@@ -172,11 +172,23 @@ function addProduct(){
             })
 }
 
+function lowInventory(){
 
+    lowQuery= "SELECT * FROM products WHERE stock_quantity < 6"
+
+    connection.query(lowQuery, function(err,result){
+        if (err) throw err;
+
+        console.table(result)
+        connection.end();
+    });
+}
 
 //**Start The first Menu of choices */
 function start(){
 managerQuestions();
 }
+
+
 
 start()
