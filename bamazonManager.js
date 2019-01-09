@@ -48,6 +48,7 @@ function managerQuestions(){
                                 break;
                             
                                 case "Add to Inventory":
+                              
                                     addInventory();
                                
                                 break;
